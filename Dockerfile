@@ -5,36 +5,44 @@ LABEL version="1.0.0"
 ###########################################
 # Install dependencies for extensions etc #
 ###########################################
+# cron: application specific tasks
 # libicu-dev: for ext-intl
 # libjpeg-dev: for ext-gd
 # libpng-dev: for ext-gd
+# libssl-dev: for ext-mongodb auth support
 # libzip-dev: for ext-zip
 # locales: for setting locale to de_DE.UTF8
+# python-pip: for supervisor
+# pip & setuptools: for supervisor-stdout
+# supervisor: entrypoint, keeps FPM + Cron running
+# supervisor-stdout: to show process output in container logs
 RUN apt-get update && \
     apt-get install -yq --no-install-recommends \
       cron \
       libicu-dev \
       libjpeg-dev \
       libpng-dev \
+      libssl-dev \
       libzip-dev \
       locales \
       python-pip \
-      python-setuptools \
       supervisor \
     && rm -rf /var/lib/apt/lists* \
+    && pip install pip --upgrade \
+    && pip install setuptools --upgrade \
     && pip install supervisor-stdout
 
 ################################
 # Install extensions from PECL #
 ################################
 # further possible extensions:
-## apcu: 5.1.17
 ## gnupg: [requires gnupg libgpgme-dev]
 
+# apcu: very fast user cache, e.g. for api platform
 # redis: session storage & cache
-RUN pecl install redis && \
+RUN pecl install apcu mongodb redis && \
     pecl clear-cache && \
-    docker-php-ext-enable redis
+    docker-php-ext-enable apcu mongodb redis
 
 ###################################################
 # Some extensions must need special configuration #
