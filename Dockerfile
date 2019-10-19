@@ -25,11 +25,11 @@ RUN apt-get update && \
       libssl-dev \
       libzip-dev \
       locales \
-      python-pip \
+      python3 \
       supervisor \
     && rm -rf /var/lib/apt/lists* \
-    && pip install pip --upgrade \
-    && pip install setuptools --upgrade \
+    && curl --silent --show-error --retry 3 https://bootstrap.pypa.io/get-pip.py | python \
+    && pip install setuptools \
     && pip install supervisor-stdout
 
 ################################
