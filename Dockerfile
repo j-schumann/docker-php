@@ -6,12 +6,14 @@ LABEL version="1.0.1"
 # Install dependencies for extensions etc #
 ###########################################
 # cron: application specific tasks
+# gnupg: for nodejs install
 # libicu-dev: for ext-intl
 # libjpeg-dev: for ext-gd
 # libpng-dev: for ext-gd
 # libssl-dev: for ext-mongodb auth support
 # libzip-dev: for ext-zip
 # locales: for setting locale to de_DE.UTF8
+# lsb-release: for nodejs install
 # python-pip: for supervisor
 # pip & setuptools: for supervisor-stdout
 # supervisor: entrypoint, keeps FPM + Cron running
@@ -20,19 +22,20 @@ LABEL version="1.0.1"
 RUN apt-get update && \
     apt-get install -yq --no-install-recommends \
       cron \
+      gnupg \
       libicu-dev \
       libjpeg-dev \
       libpng-dev \
       libssl-dev \
       libzip-dev \
       locales \
-      python3 \
-      supervisor \
+      lsb-release \
+      python3 python3-distutils \
       wget \
     && rm -rf /var/lib/apt/lists* \
-    && curl --silent --show-error --retry 3 https://bootstrap.pypa.io/get-pip.py | python \
+    && curl --silent --show-error --retry 3 https://bootstrap.pypa.io/get-pip.py | python3 \
     && pip install setuptools \
-    && pip install supervisor-stdout
+    && pip install supervisor supervisor-stdout
 
 ################################
 # Install extensions from PECL #
@@ -72,10 +75,11 @@ RUN docker-php-ext-install gd intl opcache pdo_mysql zip
 #############################
 # Install Node + NPM + Yarn #
 #############################
-RUN curl -sL https://deb.nodesource.com/setup_12.x | bash && \
-    apt-get install -yq nodejs && \
-    npm install -g npm && \
-    npm install -g yarn
+RUN curl -sL https://deb.nodesource.com/setup_13.x | bash && \
+    apt-get install -yq --no-install-recommends \
+      nodejs \
+    && npm install -g npm \
+    && npm install -g yarn
 
 ##################################################################################
 # Localize by generating locales for PHP to translate / number-format for German #
