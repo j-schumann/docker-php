@@ -1,6 +1,6 @@
 FROM php:7.3-fpm
 LABEL company="Vrok"
-LABEL version="1.0.0"
+LABEL version="1.0.1"
 
 ###########################################
 # Install dependencies for extensions etc #
@@ -16,6 +16,7 @@ LABEL version="1.0.0"
 # pip & setuptools: for supervisor-stdout
 # supervisor: entrypoint, keeps FPM + Cron running
 # supervisor-stdout: to show process output in container logs
+# wget: for composer install script
 RUN apt-get update && \
     apt-get install -yq --no-install-recommends \
       cron \
@@ -27,6 +28,7 @@ RUN apt-get update && \
       locales \
       python3 \
       supervisor \
+      wget \
     && rm -rf /var/lib/apt/lists* \
     && curl --silent --show-error --retry 3 https://bootstrap.pypa.io/get-pip.py | python \
     && pip install setuptools \
