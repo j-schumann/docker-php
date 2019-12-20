@@ -7,6 +7,7 @@ LABEL version="1.0.1"
 ###########################################
 # cron: application specific tasks
 # gnupg: for nodejs install
+# libfreetype6-dev: for ext-gd
 # libicu-dev: for ext-intl
 # libjpeg-dev: for ext-gd
 # libpng-dev: for ext-gd
@@ -23,6 +24,7 @@ RUN apt-get update && \
     apt-get install -yq --no-install-recommends \
       cron \
       gnupg \
+      libfreetype6-dev \
       libicu-dev \
       libjpeg-dev \
       libpng-dev \
@@ -53,7 +55,7 @@ RUN pecl install apcu mongodb redis && \
 ###################################################
 # Some extensions must need special configuration #
 ###################################################
-RUN docker-php-ext-configure gd --with-jpeg-dir=/usr
+RUN docker-php-ext-configure gd --with-jpeg --with-freetype
 
 #####################################
 # Install additional PHP extensions #
