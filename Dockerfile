@@ -11,6 +11,7 @@ LABEL version="1.0.1"
 # libicu-dev: for ext-intl
 # libjpeg-dev: for ext-gd
 # libpng-dev: for ext-gd
+# librabbitmq-dev: for ext-amqp / rabbitmq access
 # libssl-dev: for ext-mongodb auth support
 # libzip-dev: for ext-zip
 # locales: for setting locale to de_DE.UTF8
@@ -28,6 +29,7 @@ RUN apt-get update && \
       libicu-dev \
       libjpeg-dev \
       libpng-dev \
+      librabbitmq-dev \
       libssl-dev \
       libzip-dev \
       locales \
@@ -46,11 +48,12 @@ RUN apt-get update && \
 # further possible extensions:
 ## gnupg: [requires gnupg libgpgme-dev]
 
+# amqp: message queue
 # apcu: very fast user cache, e.g. for api platform
 # redis: session storage & cache
-RUN pecl install apcu mongodb redis && \
+RUN pecl install amqp apcu mongodb redis && \
     pecl clear-cache && \
-    docker-php-ext-enable apcu mongodb redis
+    docker-php-ext-enable amqp apcu mongodb redis
 
 ###################################################
 # Some extensions must need special configuration #
