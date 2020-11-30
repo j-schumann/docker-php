@@ -1,120 +1,67 @@
-FROM php:7.4-fpm
-LABEL company="Vrok"
-LABEL version="1.0.1"
+FROM php:7.4-fpm-alpine
 
-###########################################
-# Install dependencies for extensions etc #
-###########################################
-# cron: application specific tasks
-# gnupg: for nodejs install
-# libfreetype6-dev: for ext-gd
-# libicu-dev: for ext-intl
-# libjpeg-dev: for ext-gd
-# libpng-dev: for ext-gd
-# librabbitmq-dev: for ext-amqp / rabbitmq access
-# libssl-dev: for ext-mongodb auth support
-# libzip-dev: for ext-zip
-# locales: for setting locale to de_DE.UTF8
-# lsb-release: for nodejs install
-# python-pip: for supervisor
-# pip & setuptools: for supervisor-stdout
-# supervisor: entrypoint, keeps FPM + Cron running
-# supervisor-stdout: to show process output in container logs
-# wget: for composer install script
-RUN apt-get update && \
-    apt-get install -yq --no-install-recommends \
-      cron \
-      gnupg \
-      libfreetype6-dev \
-      libicu-dev \
-      libjpeg-dev \
-      libpng-dev \
-      librabbitmq-dev \
-      libssl-dev \
-      libzip-dev \
-      locales \
-      lsb-release \
-      python3 \
-      supervisor \
-      wget \
-    && rm -rf /var/lib/apt/lists* \
-    && curl --silent --show-error --retry 3 https://bootstrap.pypa.io/get-pip.py | python \
-    && pip install setuptools \
-    && pip install supervisor-stdout
+# persistent / runtime deps
+RUN apk add --no-cache \
+	acl \
+	file \
+	gettext \
+	git \
+	supervisor \
+    ;
 
-################################
-# Install extensions from PECL #
-################################
-# further possible extensions:
-## gnupg: [requires gnupg libgpgme-dev]
+RUN set -eux; \
+    apk add --no-cache --virtual .build-deps \
+	$PHPIZE_DEPS \
+	icu-dev \
+	freetype-dev \
+        jpeg-dev \
+        libpng-dev \
+        rabbitmq-c-dev \
+        openssl-dev \
+	libzip-dev \
+	zlib-dev \
+    ; \
+    docker-php-ext-configure gd --with-jpeg --with-freetype; \
+    docker-php-ext-install -j$(nproc) \
+        gd \
+	intl \
+	pdo_mysql \
+	zip \
+    ; \
+    pecl install \
+        amqp \
+	apcu \
+        mongodb \
+    ; \
+    pecl clear-cache; \
+    docker-php-ext-enable \
+        amqp \
+	apcu \
+	mongodb \
+	opcache \
+    ; \
+    runDeps="$( \
+	scanelf --needed --nobanner --format '%n#p' --recursive /usr/local/lib/php/extensions \
+	    | tr ',' '\n' \
+	    | sort -u \
+	    | awk 'system("[ -e /usr/local/lib/" $1 " ]") == 0 { next } { print "so:" $1 }' \
+    )"; \
+    apk add --no-cache --virtual .api-phpexts-rundeps $runDeps; \
+    \
+    apk del .build-deps
 
-# amqp: message queue
-# apcu: very fast user cache, e.g. for api platform
-# redis: session storage & cache
-RUN pecl install amqp apcu mongodb redis && \
-    pecl clear-cache && \
-    docker-php-ext-enable amqp apcu mongodb redis
+# https://getcomposer.org/doc/03-cli.md#composer-allow-superuser
+ENV COMPOSER_ALLOW_SUPERUSER=1
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-###################################################
-# Some extensions must need special configuration #
-###################################################
-RUN docker-php-ext-configure gd --with-jpeg --with-freetype
+# install Symfony Flex globally to speed up download of Composer packages (parallelized prefetching)
+RUN set -eux; \
+	composer global require "symfony/flex" --prefer-dist --no-progress --no-suggest --classmap-authoritative; \
+	composer clear-cache
+ENV PATH="${PATH}:/root/.composer/vendor/bin"
 
-#####################################
-# Install additional PHP extensions #
-#####################################
-# further possible extensions:
-## bcmath:
-## bz2: [requires libbz2-dev]
-## gettext:
-## gmp: [requires libgmp-dev]
-## mbstring: multibyte character handling - already in default image
-## mysqli: basic db access to MySQL/MariaDB
+WORKDIR /srv/api
 
-# gd: image handling, e.g. for NextGen
-# intl: translation, number formatting
-# opcache: local opcode cache, replaces APC
-# pdo_mysql: MySQL/MariaDB driver for PDO - PDO is already in the default image
-# zip: (de)compression
-RUN docker-php-ext-install gd intl opcache pdo_mysql zip
-
-#############################
-# Install Node + NPM + Yarn #
-#############################
-RUN curl -sL https://deb.nodesource.com/setup_13.x | bash && \
-    apt-get install -yq --no-install-recommends \
-      nodejs \
-    && npm install -g npm \
-    && npm install -g yarn
-
-##################################################################################
-# Localize by generating locales for PHP to translate / number-format for German #
-# and setting the timezone                                                       #
-##################################################################################
-ENV TZ=Europe/Berlin
-RUN echo "de_DE.UTF8 UTF-8" > /etc/locale.gen && locale-gen && \
-    ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
-
-##############################
-# Create folders for logging #
-# for FPM & Supervisor       #
-##############################
-RUN mkdir -p /var/www/log/supervisor && chown -R www-data:www-data /var/www/log 
-
-###########################
-# Customize configuration #
-###########################
-COPY ./php.ini /usr/local/etc/php/conf.d/php.ini
-COPY ./php-fpm.conf /usr/local/etc/php-fpm.conf
-COPY ./supervisord.conf /etc/supervisor/supervisord.conf
-
-####################
-# Install Composer #
-####################
-COPY ./install-composer.sh /tmp/
-RUN /tmp/install-composer.sh
-
-####################################################################
-# Supervisor runs php-fpm & cron & the symfony messagebus consumer #
-####################################################################
-CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]
+RUN mkdir -p var/{cache,log,uploads} templates_custom translations_custom; \
+    mkdir -p /log/supervisor; chown -R www-data:www-data /log
+VOLUME /srv/api/var
