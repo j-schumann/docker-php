@@ -35,11 +35,12 @@ RUN apt-get update && \
       locales \
       lsb-release \
       python3 \
+      python3-distutils \
       supervisor \
       wget \
-    && rm -rf /var/lib/apt/lists* \
-    && curl --silent --show-error --retry 3 https://bootstrap.pypa.io/get-pip.py | python \
-    && pip install setuptools \
+    && rm -rf /var/lib/apt/lists* 
+RUN curl --silent --show-error --retry 3 https://bootstrap.pypa.io/get-pip.py | python3
+RUN pip install setuptools \
     && pip install supervisor-stdout
 
 ################################
