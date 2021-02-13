@@ -34,14 +34,14 @@ RUN apt-get update && \
       libzip-dev \
       locales \
       lsb-release \
-      python3 \
-      python3-distutils \
+#      python3 \
+#      python3-distutils \
       supervisor \
       wget \
-    && rm -rf /var/lib/apt/lists* \
-    && curl --silent --show-error --retry 3 https://bootstrap.pypa.io/get-pip.py | python3 \
-    && pip install setuptools \
-    && pip install supervisor-stdout
+    && rm -rf /var/lib/apt/lists*
+#    && curl --silent --show-error --retry 3 https://bootstrap.pypa.io/get-pip.py | python3 \
+#    && pip install setuptools \
+#    && pip install supervisor-stdout
 
 ################################
 # Install extensions from PECL #
