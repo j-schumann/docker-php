@@ -16,11 +16,7 @@ LABEL version="1.0.1"
 # libzip-dev: for ext-zip
 # locales: for setting locale to de_DE.UTF8
 # lsb-release: for nodejs install
-# python-pip: for supervisor
-# pip & setuptools: for supervisor-stdout
 # supervisor: entrypoint, keeps FPM + Cron running
-# supervisor-stdout: to show process output in container logs
-# wget: for composer install script
 RUN apt-get update && \
     apt-get install -yq --no-install-recommends \
       cron \
@@ -34,14 +30,8 @@ RUN apt-get update && \
       libzip-dev \
       locales \
       lsb-release \
-#      python3 \
-#      python3-distutils \
       supervisor \
-      wget \
     && rm -rf /var/lib/apt/lists*
-#    && curl --silent --show-error --retry 3 https://bootstrap.pypa.io/get-pip.py | python3 \
-#    && pip install setuptools \
-#    && pip install supervisor-stdout
 
 ################################
 # Install extensions from PECL #
