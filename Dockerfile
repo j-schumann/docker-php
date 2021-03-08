@@ -20,6 +20,7 @@ LABEL version="1.0.1"
 RUN apt-get update && \
     apt-get install -yq --no-install-recommends \
       cron \
+      git \
       gnupg \
       libfreetype6-dev \
       libicu-dev \
@@ -31,6 +32,7 @@ RUN apt-get update && \
       locales \
       lsb-release \
       supervisor \
+      zip \
     && rm -rf /var/lib/apt/lists*
 
 ################################
