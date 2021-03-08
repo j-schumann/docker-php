@@ -7,6 +7,7 @@ RUN apk add --no-cache \
 	gettext \
 	git \
 	supervisor \
+        zip \
     ;
 
 RUN set -eux; \
