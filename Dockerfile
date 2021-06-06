@@ -63,6 +63,5 @@ ENV PATH="${PATH}:/root/.composer/vendor/bin"
 
 WORKDIR /srv/api
 
-RUN mkdir -p var/{cache,log,uploads} templates_custom translations_custom; \
+RUN mkdir -p var/cache var/log /var/uploads templates_custom translations_custom; \
     mkdir -p /log/supervisor; chown -R www-data:www-data /log
-VOLUME /srv/api/var
