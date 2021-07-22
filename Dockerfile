@@ -1,6 +1,10 @@
 FROM php:7.4-fpm
 LABEL company="Vrok"
-LABEL version="1.0.1"
+LABEL version="1.1.0"
+
+ENV START_FPM=true
+ENV START_CRON=true
+ENV START_MESSENGER=true
 
 ###########################################
 # Install dependencies for extensions etc #
