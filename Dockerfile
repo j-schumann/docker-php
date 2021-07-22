@@ -92,11 +92,10 @@ ENV TZ=Europe/Berlin
 RUN echo "de_DE.UTF8 UTF-8" > /etc/locale.gen && locale-gen && \
     ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
-##############################
-# Create folders for logging #
-# for FPM & Supervisor       #
-##############################
-RUN mkdir -p /var/www/log/supervisor && chown -R www-data:www-data /var/www/log 
+#############################
+# Create folder for logging #
+#############################
+RUN mkdir -p /var/www/log && chown -R www-data:www-data /var/www/log
 
 ###########################
 # Customize configuration #
