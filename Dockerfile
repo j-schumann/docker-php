@@ -111,6 +111,8 @@ COPY ./supervisord.conf /etc/supervisor/supervisord.conf
 COPY ./install-composer.sh /tmp/
 RUN /tmp/install-composer.sh
 
+WORKDIR /var/www
+
 ####################################################################
 # Supervisor runs php-fpm & cron & the symfony messagebus consumer #
 ####################################################################
