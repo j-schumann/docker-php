@@ -1,4 +1,4 @@
-FROM php:7.4-fpm-alpine
+FROM php:8-fpm-alpine
 
 # persistent / runtime deps
 RUN apk add --no-cache \
@@ -17,7 +17,6 @@ RUN set -eux; \
 	freetype-dev \
         jpeg-dev \
         libpng-dev \
-        rabbitmq-c-dev \
         openssl-dev \
 	libzip-dev \
 	zlib-dev \
@@ -30,14 +29,12 @@ RUN set -eux; \
 	zip \
     ; \
     pecl install \
-        amqp \
 	apcu \
         mongodb \
         redis \
     ; \
     pecl clear-cache; \
     docker-php-ext-enable \
-        amqp \
 	apcu \
 	mongodb \
 	opcache \
