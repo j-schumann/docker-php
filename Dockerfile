@@ -33,6 +33,7 @@ RUN set -eux; \
         amqp \
 	apcu \
         mongodb \
+        redis \
     ; \
     pecl clear-cache; \
     docker-php-ext-enable \
@@ -40,6 +41,7 @@ RUN set -eux; \
 	apcu \
 	mongodb \
 	opcache \
+        redis \
     ; \
     runDeps="$( \
 	scanelf --needed --nobanner --format '%n#p' --recursive /usr/local/lib/php/extensions \
