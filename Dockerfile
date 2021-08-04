@@ -1,6 +1,6 @@
-FROM php:7.4-fpm
+FROM php:8-fpm
 LABEL company="Vrok"
-LABEL version="1.1.0"
+LABEL version="1.2.0"
 
 ENV START_FPM=true
 ENV START_CRON=true
@@ -30,7 +30,6 @@ RUN apt-get update && \
       libicu-dev \
       libjpeg-dev \
       libpng-dev \
-      librabbitmq-dev \
       libssl-dev \
       libzip-dev \
       locales \
@@ -45,12 +44,11 @@ RUN apt-get update && \
 # further possible extensions:
 ## gnupg: [requires gnupg libgpgme-dev]
 
-# amqp: message queue
 # apcu: very fast user cache, e.g. for api platform
 # redis: session storage & cache
-RUN pecl install amqp apcu mongodb redis && \
+RUN pecl install apcu mongodb redis && \
     pecl clear-cache && \
-    docker-php-ext-enable amqp apcu mongodb redis
+    docker-php-ext-enable apcu mongodb redis
 
 ###################################################
 # Some extensions must need special configuration #
