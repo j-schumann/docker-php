@@ -5,6 +5,7 @@ LABEL version="1.0.0"
 ###########################################
 # Install dependencies for extensions etc #
 ###########################################
+# libfreetype6-dev: for ext-gd
 # libicu-dev: for ext-intl
 # libjpeg-dev: for ext-gd
 # libpng-dev: for ext-gd
@@ -12,6 +13,7 @@ LABEL version="1.0.0"
 # locales: for setting locale to de_DE.UTF8
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
+      libfreetype6-dev \
       libicu-dev \
       libjpeg-dev \
       libpng-dev \
@@ -34,7 +36,7 @@ RUN pecl install redis && \
 ###################################################
 # Some extensions must need special configuration #
 ###################################################
-RUN docker-php-ext-configure gd --with-jpeg-dir=/usr
+RUN docker-php-ext-configure gd --with-jpeg --with-freetype
 
 #####################################
 # Install additional PHP extensions #
