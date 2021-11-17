@@ -1,6 +1,6 @@
 FROM php:8.0-fpm
 LABEL company="Vrok"
-LABEL version="1.0.0"
+LABEL version="1.1.0"
 
 ###########################################
 # Install dependencies for extensions etc #
