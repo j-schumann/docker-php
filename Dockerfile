@@ -30,12 +30,14 @@ RUN set -eux; \
     ; \
     pecl install \
 	apcu \
+        apfd \
         mongodb \
         redis \
     ; \
     pecl clear-cache; \
     docker-php-ext-enable \
 	apcu \
+        apfd \
 	mongodb \
 	opcache \
         redis \
