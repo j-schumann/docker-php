@@ -18,6 +18,7 @@ RUN set -eux; \
         jpeg-dev \
         libpng-dev \
         openssl-dev \
+        postgresql-dev \
 	libzip-dev \
 	zlib-dev \
     ; \
@@ -26,6 +27,7 @@ RUN set -eux; \
         gd \
 	intl \
 	pdo_mysql \
+        pdo_pgsql \
 	zip \
     ; \
     pecl install \
