@@ -2,5 +2,5 @@
   "extends": [
     "config:base"
   ],
-  "baseBranches": ["master", "symfony"]
+  "baseBranches": ["php8", "api-8", "symfony-8"]
 }
