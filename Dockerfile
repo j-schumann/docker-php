@@ -60,6 +60,7 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 # install Symfony Flex globally to speed up download of Composer packages (parallelized prefetching)
 RUN set -eux; \
+        composer config --global --no-plugins allow-plugins.symfony/flex true
 	composer global require "symfony/flex" --prefer-dist --no-progress --no-suggest --classmap-authoritative; \
 	composer clear-cache
 ENV PATH="${PATH}:/root/.composer/vendor/bin"
