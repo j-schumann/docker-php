@@ -44,4 +44,4 @@ jobs:
           labels: ${{ steps.phpmeta.outputs.labels }}
           cache-from: type=registry,ref=vrokdd/php
           cache-to: type=inline
-          platforms: linux/amd64,linux/arm/v7,windows/amd64
+          platforms: linux/amd64,linux/arm/v7
