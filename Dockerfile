@@ -6,6 +6,7 @@ RUN apk add --no-cache \
 	file \
 	gettext \
 	git \
+	icu-data-full \
 	supervisor \
         zip \
     ;
