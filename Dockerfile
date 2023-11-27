@@ -1,4 +1,4 @@
-FROM php:8.2-fpm
+FROM php:8.3-fpm
 LABEL company="Vrok"
 LABEL version="1.1.0"
 
