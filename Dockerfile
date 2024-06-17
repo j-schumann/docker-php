@@ -79,8 +79,8 @@ RUN docker-php-ext-install gd intl opcache pdo_mysql zip
 RUN curl -sL https://deb.nodesource.com/setup_18.x | bash && \
     apt-get install -yq --no-install-recommends \
       nodejs \
-    && npm install -g npm \
-    && npm install -g yarn
+    && /usr/local/bin/npm install -g npm \
+    && /usr/local/bin/npm install -g yarn
 
 ##################################################################################
 # Localize by generating locales for PHP to translate / number-format for German #
