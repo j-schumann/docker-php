@@ -16,7 +16,7 @@ RUN set -eux; \
 	$PHPIZE_DEPS \
 	icu-dev \
 	freetype-dev \
-        libgmp-dev \
+        gmp-dev \
         jpeg-dev \
         libpng-dev \
         openssl-dev \
