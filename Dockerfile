@@ -16,6 +16,7 @@ RUN set -eux; \
 	$PHPIZE_DEPS \
 	icu-dev \
 	freetype-dev \
+        libgmp-dev \
         jpeg-dev \
         libpng-dev \
         openssl-dev \
@@ -26,6 +27,7 @@ RUN set -eux; \
     docker-php-ext-configure gd --with-jpeg --with-freetype; \
     docker-php-ext-install -j$(nproc) \
         gd \
+	gmp \
 	intl \
 	pdo_mysql \
         pdo_pgsql \
