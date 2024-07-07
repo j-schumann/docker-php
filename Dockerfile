@@ -78,7 +78,8 @@ RUN docker-php-ext-install gd intl opcache pdo_mysql zip
 #############################
 RUN curl -sL https://deb.nodesource.com/setup_18.x | bash && \
     apt-get install -yq --no-install-recommends \
-      nodejs npm \
+      nodejs \
+    && whereis npm \
     && npm install -g npm \
     && npm install -g yarn
 
