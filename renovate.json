@@ -1,6 +1,10 @@
 {
   "extends": [
-    "config:base"
+    "config:recommended"
   ],
-  "baseBranches": ["php8", "api-8", "symfony-8"]
+  "baseBranches": [
+    "php8",
+    "api-8",
+    "symfony-8"
+  ]
 }
