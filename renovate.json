@@ -2,7 +2,7 @@
   "extends": [
     "config:recommended"
   ],
-  "baseBranches": [
+  "baseBranchPatterns": [
     "php8",
     "api-8",
     "symfony-8"
