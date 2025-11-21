@@ -6,6 +6,9 @@ ENV START_FPM=true
 ENV START_CRON=true
 ENV START_MESSENGER=true
 
+# List bundled extensions
+RUN php -m
+
 ###########################################
 # Install dependencies for extensions etc #
 ###########################################
