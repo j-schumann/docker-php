@@ -73,7 +73,7 @@ RUN docker-php-ext-configure gd --with-jpeg --with-freetype
 # opcache: local opcode cache, replaces APC
 # pdo_mysql: MySQL/MariaDB driver for PDO - PDO is already in the default image
 # zip: (de)compression
-RUN docker-php-ext-install gd intl opcache pdo_mysql zip
+RUN docker-php-ext-install gd intl pdo_mysql zip
 
 #############################
 # Install Node + NPM + Yarn #
@@ -81,8 +81,7 @@ RUN docker-php-ext-install gd intl opcache pdo_mysql zip
 RUN curl -sL https://deb.nodesource.com/setup_22.x | bash && \
     apt-get install -yq --no-install-recommends \
       nodejs \
-    && npm install -g npm \
-    && npm install -g yarn
+    && npm install -g npm yarn
 
 ##################################################################################
 # Localize by generating locales for PHP to translate / number-format for German #
