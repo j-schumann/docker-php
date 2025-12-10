@@ -1,3 +1,4 @@
+# Dockerfile for docker-php:symfony-8
 FROM php:8-fpm
 LABEL company="Vrok"
 LABEL version="1.3.0"
