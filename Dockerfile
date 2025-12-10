@@ -1,6 +1,7 @@
-FROM php:8.4-fpm
+# Dockerfile for image vrokdd/php
+FROM php:8.5-fpm
 LABEL company="Vrok"
-LABEL version="1.1.0"
+LABEL version="1.3.0"
 
 ###########################################
 # Install dependencies for extensions etc #
@@ -51,10 +52,9 @@ RUN docker-php-ext-configure gd --with-jpeg --with-freetype
 
 # gd: image handling, e.g. for NextGen
 # intl: translation, number formatting
-# opcache: local opcode cache, replaces APC
 # pdo_mysql: MySQL/MariaDB driver for PDO - PDO is already in the default image
 # zip: (de)compression
-RUN docker-php-ext-install gd intl opcache pdo_mysql zip
+RUN docker-php-ext-install gd intl pdo_mysql zip
 
 ##################################################################################
 # Localize by generating locales for PHP to translate / number-format for German #
