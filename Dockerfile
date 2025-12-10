@@ -1,4 +1,4 @@
-# Dockerfile for docker-php:symfony-8
+# Dockerfile for image vrokdd/php:symfony-8
 FROM php:8-fpm
 LABEL company="Vrok"
 LABEL version="1.3.0"
@@ -6,10 +6,6 @@ LABEL version="1.3.0"
 ENV START_FPM=true
 ENV START_CRON=true
 ENV START_MESSENGER=true
-
-# List bundled extensions
-RUN php -m
-RUN exit
 
 ###########################################
 # Install dependencies for extensions etc #
