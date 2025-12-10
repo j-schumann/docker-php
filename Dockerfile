@@ -48,9 +48,9 @@ RUN apt-get update && \
 # amqp: message queue
 # apcu: very fast user cache, e.g. for api platform
 # redis: session storage & cache
-RUN pecl install amqp apcu mongodb redis && \
+RUN pecl install amqp apcu redis && \
     pecl clear-cache && \
-    docker-php-ext-enable amqp apcu mongodb redis
+    docker-php-ext-enable amqp apcu redis
 
 ###################################################
 # Some extensions must need special configuration #
@@ -78,7 +78,7 @@ RUN docker-php-ext-install gd intl opcache pdo_mysql zip
 #############################
 # Install Node + NPM + Yarn #
 #############################
-RUN curl -sL https://deb.nodesource.com/setup_18.x | bash && \
+RUN curl -sL https://deb.nodesource.com/setup_22.x | bash && \
     apt-get install -yq --no-install-recommends \
       nodejs \
     && npm install -g npm \
@@ -107,8 +107,7 @@ COPY ./supervisord.conf /etc/supervisor/supervisord.conf
 ####################
 # Install Composer #
 ####################
-COPY ./install-composer.sh /tmp/
-RUN /tmp/install-composer.sh
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www/html
 
