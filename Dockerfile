@@ -1,6 +1,6 @@
 FROM php:8-fpm
 LABEL company="Vrok"
-LABEL version="1.2.0"
+LABEL version="1.3.0"
 
 ENV START_FPM=true
 ENV START_CRON=true
@@ -8,6 +8,7 @@ ENV START_MESSENGER=true
 
 # List bundled extensions
 RUN php -m
+RUN exit
 
 ###########################################
 # Install dependencies for extensions etc #
@@ -71,20 +72,21 @@ RUN docker-php-ext-configure gd --with-jpeg --with-freetype
 
 # gd: image handling, e.g. for NextGen
 # intl: translation, number formatting
-# opcache: local opcode cache, replaces APC
 # pdo_mysql: MySQL/MariaDB driver for PDO - PDO is already in the default image
 # zip: (de)compression
-RUN docker-php-ext-install gd intl opcache pdo_mysql zip
+RUN docker-php-ext-install gd intl pdo_mysql zip
+
+RUN apt-get install -yq --no-install-recommends $PHPIZE_DEPS \
+	&& pecl install xdebug-3.5.0 \
+	&& docker-php-ext-enable xdebug
 
 #############################
 # Install Node + NPM + Yarn #
 #############################
-RUN curl -sL https://deb.nodesource.com/setup_18.x | bash && \
+RUN curl -sL https://deb.nodesource.com/setup_22.x | bash && \
     apt-get install -yq --no-install-recommends \
       nodejs \
-    && whereis npm \
-    && npm install -g npm \
-    && npm install -g yarn
+    && npm install -g npm yarn
 
 ##################################################################################
 # Localize by generating locales for PHP to translate / number-format for German #
