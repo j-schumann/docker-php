@@ -1,3 +1,4 @@
+# Dockerfile for image vrokdd/php:api-8
 FROM php:8-fpm-alpine
 
 # persistent / runtime deps
@@ -8,7 +9,7 @@ RUN apk add --no-cache \
 	git \
 	icu-data-full \
 	supervisor \
-        zip \
+    zip \
     ;
 
 RUN set -eux; \
@@ -16,36 +17,35 @@ RUN set -eux; \
 	$PHPIZE_DEPS \
 	icu-dev \
 	freetype-dev \
-        gmp-dev \
-        jpeg-dev \
-        libpng-dev \
-        openssl-dev \
-        postgresql-dev \
+    gmp-dev \
+    jpeg-dev \
+    libpng-dev \
+    openssl-dev \
+    postgresql-dev \
 	libzip-dev \
 	zlib-dev \
     ; \
     docker-php-ext-configure gd --with-jpeg --with-freetype; \
     docker-php-ext-install -j$(nproc) \
-        gd \
+    gd \
 	gmp \
 	intl \
 	pdo_mysql \
-        pdo_pgsql \
+    pdo_pgsql \
 	zip \
     ; \
     pecl install \
 	apcu \
-        apfd \
-        mongodb \
-        redis \
+    apfd \
+    mongodb \
+    redis \
     ; \
     pecl clear-cache; \
     docker-php-ext-enable \
 	apcu \
-        apfd \
+    apfd \
 	mongodb \
-	opcache \
-        redis \
+    redis \
     ; \
     runDeps="$( \
 	scanelf --needed --nobanner --format '%n#p' --recursive /usr/local/lib/php/extensions \
@@ -63,7 +63,7 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 # install Symfony Flex globally to speed up download of Composer packages (parallelized prefetching)
 RUN set -eux; \
-        composer config --global --no-plugins allow-plugins.symfony/flex true; \
+    composer config --global --no-plugins allow-plugins.symfony/flex true; \
 	composer global require "symfony/flex" --no-progress --classmap-authoritative; \
 	composer clear-cache
 ENV PATH="${PATH}:/root/.composer/vendor/bin"
