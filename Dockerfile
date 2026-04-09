@@ -74,15 +74,14 @@ RUN docker-php-ext-configure gd --with-jpeg --with-freetype
 RUN docker-php-ext-install gd intl pdo_mysql zip
 
 RUN apt-get install -yq --no-install-recommends $PHPIZE_DEPS \
-	&& pecl install xdebug-3.5.0 \
-	&& docker-php-ext-enable xdebug
+    && pecl install xdebug-3.5.1 \
+    && docker-php-ext-enable xdebug
 
 #############################
 # Install Node + NPM + Yarn #
 #############################
-RUN curl -sL https://deb.nodesource.com/setup_22.x | bash && \
-    apt-get install -yq --no-install-recommends \
-      nodejs \
+RUN curl -sL https://deb.nodesource.com/setup_24.x | bash \
+    && apt-get install -yq --no-install-recommends nodejs \
     && npm install -g npm yarn
 
 ##################################################################################
@@ -90,8 +89,10 @@ RUN curl -sL https://deb.nodesource.com/setup_22.x | bash && \
 # and setting the timezone                                                       #
 ##################################################################################
 ENV TZ=Europe/Berlin
-RUN echo "de_DE.UTF8 UTF-8" > /etc/locale.gen && locale-gen && \
-    ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+RUN echo "de_DE.UTF8 UTF-8" > /etc/locale.gen \
+    && locale-gen \
+    && ln -snf /usr/share/zoneinfo/$TZ /etc/localtime \
+    && echo $TZ > /etc/timezone
 
 #############################
 # Create folder for logging #
@@ -109,7 +110,7 @@ COPY ./supervisord.conf /etc/supervisor/supervisord.conf
 # Install Composer #
 ####################
 COPY ./install-composer.sh /tmp/
-RUN /tmp/install-composer.sh
+RUN chmod u+x /tmp/install-composer.sh && /tmp/install-composer.sh
 
 WORKDIR /var/www/html
 
