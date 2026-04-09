@@ -3,55 +3,55 @@ FROM php:8-fpm-alpine
 
 # persistent / runtime deps
 RUN apk add --no-cache \
-	acl \
-	file \
-	gettext \
-	git \
-	icu-data-full \
-	supervisor \
+    acl \
+    file \
+    gettext \
+    git \
+    icu-data-full \
+    supervisor \
     zip \
     ;
 
 RUN set -eux; \
     apk add --no-cache --virtual .build-deps \
-	$PHPIZE_DEPS \
-	icu-dev \
-	freetype-dev \
+    $PHPIZE_DEPS \
+    icu-dev \
+    freetype-dev \
     gmp-dev \
     jpeg-dev \
     libpng-dev \
     openssl-dev \
     postgresql-dev \
-	libzip-dev \
-	zlib-dev \
+    libzip-dev \
+    zlib-dev \
     ; \
     docker-php-ext-configure gd --with-jpeg --with-freetype; \
     docker-php-ext-install -j$(nproc) \
     gd \
-	gmp \
-	intl \
-	pdo_mysql \
+    gmp \
+    intl \
+    pdo_mysql \
     pdo_pgsql \
-	zip \
+    zip \
     ; \
     pecl install \
-	apcu \
+    apcu \
     apfd \
     mongodb \
     redis \
     ; \
     pecl clear-cache; \
     docker-php-ext-enable \
-	apcu \
+    apcu \
     apfd \
-	mongodb \
+    mongodb \
     redis \
     ; \
     runDeps="$( \
-	scanelf --needed --nobanner --format '%n#p' --recursive /usr/local/lib/php/extensions \
-	    | tr ',' '\n' \
-	    | sort -u \
-	    | awk 'system("[ -e /usr/local/lib/" $1 " ]") == 0 { next } { print "so:" $1 }' \
+      scanelf --needed --nobanner --format '%n#p' --recursive /usr/local/lib/php/extensions \
+       | tr ',' '\n' \
+       | sort -u \
+       | awk 'system("[ -e /usr/local/lib/" $1 " ]") == 0 { next } { print "so:" $1 }' \
     )"; \
     apk add --no-cache --virtual .api-phpexts-rundeps $runDeps; \
     \
@@ -64,8 +64,8 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # install Symfony Flex globally to speed up download of Composer packages (parallelized prefetching)
 RUN set -eux; \
     composer config --global --no-plugins allow-plugins.symfony/flex true; \
-	composer global require "symfony/flex" --no-progress --classmap-authoritative; \
-	composer clear-cache
+    composer global require "symfony/flex" --no-progress --classmap-authoritative; \
+    composer clear-cache
 ENV PATH="${PATH}:/root/.composer/vendor/bin"
 
 WORKDIR /srv/api
