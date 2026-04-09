@@ -109,8 +109,9 @@ COPY ./supervisord.conf /etc/supervisor/supervisord.conf
 ####################
 # Install Composer #
 ####################
-COPY ./install-composer.sh /tmp/
-RUN chmod u+x /tmp/install-composer.sh && /tmp/install-composer.sh
+# https://getcomposer.org/doc/03-cli.md#composer-allow-superuser
+ENV COMPOSER_ALLOW_SUPERUSER=1
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www/html
 
