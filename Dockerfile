@@ -1,5 +1,5 @@
 # Dockerfile for image vrokdd/php:symfony-8
-FROM php:8-fpm
+FROM php:8.5-fpm
 LABEL company="Vrok"
 LABEL version="1.3.0"
 
@@ -39,18 +39,6 @@ RUN apt-get update && \
       zip \
     && rm -rf /var/lib/apt/lists*
 
-################################
-# Install extensions from PECL #
-################################
-# further possible extensions:
-## gnupg: [requires gnupg libgpgme-dev]
-
-# apcu: very fast user cache, e.g. for api platform
-# redis: session storage & cache
-RUN pecl install apcu mongodb redis && \
-    pecl clear-cache && \
-    docker-php-ext-enable apcu mongodb redis
-
 ###################################################
 # Some extensions must need special configuration #
 ###################################################
@@ -73,9 +61,24 @@ RUN docker-php-ext-configure gd --with-jpeg --with-freetype
 # zip: (de)compression
 RUN docker-php-ext-install gd intl pdo_mysql zip
 
+##################################################################
+# Install extensions with PIE (https://github.com/php/pie)       #
+# PIE selects the newest release compatible with the PHP version #
+# and enables the extension. It needs ext-zip, installed above.  #
+##################################################################
+# further possible extensions:
+## gnupg: [requires gnupg libgpgme-dev]
+COPY --from=ghcr.io/php/pie:1.5.5-bin /pie /usr/bin/pie
+
+# apcu: very fast user cache, e.g. for api platform
+# mongodb: MongoDB driver
+# redis: session storage & cache
+RUN pie install apcu/apcu \
+    && pie install mongodb/mongodb-extension \
+    && pie install phpredis/phpredis
+
 RUN apt-get install -yq --no-install-recommends $PHPIZE_DEPS \
-    && pecl install xdebug-3.5.1 \
-    && docker-php-ext-enable xdebug
+    && pie install xdebug/xdebug:3.5.3
 
 #############################
 # Install Node + NPM + Yarn #
