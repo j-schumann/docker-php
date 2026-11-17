@@ -1,4 +1,9 @@
 # Dockerfile for image vrokdd/php:api-8
+
+# The PIE image only exists for amd64 and arm64, but /pie is a platform
+# independent PHAR, so take it from the image of the build platform
+FROM --platform=$BUILDPLATFORM ghcr.io/php/pie:1.5.5-bin AS pie
+
 FROM php:8.5-fpm-alpine
 
 # persistent / runtime deps
@@ -14,7 +19,7 @@ RUN apk add --no-cache \
 
 # PIE (https://github.com/php/pie) installs extensions from Packagist, it
 # selects the newest release compatible with the PHP version and enables it
-COPY --from=ghcr.io/php/pie:1.5.5-bin /pie /usr/bin/pie
+COPY --from=pie /pie /usr/bin/pie
 
 RUN set -eux; \
     apk add --no-cache --virtual .build-deps \
