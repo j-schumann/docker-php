@@ -42,6 +42,4 @@ jobs:
           push: ${{ !startsWith(github.ref_name, 'renovate/') }}
           tags: ${{ steps.phpmeta.outputs.tags }}
           labels: ${{ steps.phpmeta.outputs.labels }}
-          cache-from: type=registry,ref=vrokdd/php
-          cache-to: type=inline
           platforms: linux/amd64,linux/arm64/v8
