@@ -74,7 +74,7 @@ RUN docker-php-ext-configure gd --with-jpeg --with-freetype
 RUN docker-php-ext-install gd intl pdo_mysql zip
 
 RUN apt-get install -yq --no-install-recommends $PHPIZE_DEPS \
-    && pecl install xdebug-3.5.1 \
+    && pecl install xdebug-3.5.3 \
     && docker-php-ext-enable xdebug
 
 #############################
