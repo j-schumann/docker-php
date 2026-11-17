@@ -3,9 +3,9 @@ on:
   workflow_dispatch:
     inputs:
       no_cache:
-        description: Build without the layer cache, to get the latest packages and extensions
+        description: Build without the layer cache, to get the latest base image, packages and extensions
         type: boolean
-        default: false
+        default: true
 
 # A newer run on the same branch replaces an older one, so an outdated build
 # never overwrites the image tag
