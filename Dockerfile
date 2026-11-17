@@ -22,18 +22,6 @@ RUN apt-get update && \
       locales \
     && rm -rf /var/lib/apt/lists*
 
-################################
-# Install extensions from PECL #
-################################
-# further possible extensions:
-## apcu: 5.1.17
-## gnupg: [requires gnupg libgpgme-dev]
-
-# redis: session storage & cache
-RUN pecl install redis && \
-    pecl clear-cache && \
-    docker-php-ext-enable redis
-
 ###################################################
 # Some extensions must need special configuration #
 ###################################################
@@ -55,6 +43,19 @@ RUN docker-php-ext-configure gd --with-jpeg --with-freetype
 # pdo_mysql: MySQL/MariaDB driver for PDO - PDO is already in the default image
 # zip: (de)compression
 RUN docker-php-ext-install gd intl pdo_mysql zip
+
+##################################################################
+# Install extensions with PIE (https://github.com/php/pie)       #
+# PIE selects the newest release compatible with the PHP version #
+# and enables the extension. It needs ext-zip, installed above.  #
+##################################################################
+# further possible extensions:
+## apcu/apcu
+## gnupg: [requires gnupg libgpgme-dev]
+COPY --from=ghcr.io/php/pie:1.5.5-bin /pie /usr/bin/pie
+
+# redis: session storage & cache
+RUN pie install phpredis/phpredis
 
 ##################################################################################
 # Localize by generating locales for PHP to translate / number-format for German #
