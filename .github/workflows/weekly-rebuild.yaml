@@ -1,0 +1,31 @@
+# Scheduled workflows only run on the default branch, so this workflow
+# dispatches the Docker Hub workflow of each maintained branch. Each run then
+# builds that branch's Dockerfile and pushes its own tag, picking up the latest
+# base image, OS packages and PECL extensions.
+name: Weekly rebuild
+
+on:
+  schedule:
+    # Mondays, 03:17 UTC
+    - cron: '17 3 * * 1'
+  workflow_dispatch:
+
+permissions:
+  actions: write
+
+jobs:
+  dispatch:
+    name: Trigger rebuild of ${{ matrix.branch }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        branch:
+          - php8
+          - api-8
+          - symfony-8
+    steps:
+      - name: Dispatch Docker Hub workflow
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: gh workflow run dockerhub.yaml --ref "${{ matrix.branch }}"

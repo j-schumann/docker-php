@@ -1,10 +1,37 @@
 {
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "config:recommended"
   ],
   "baseBranchPatterns": [
     "php8",
     "api-8",
-    "symfony-8"
+    "symfony-8",
+    "symfony-php7"
+  ],
+  "packageRules": [
+    {
+      "description": "Group the docker/* GitHub Actions, they are usually released together",
+      "matchManagers": ["github-actions"],
+      "matchPackageNames": ["docker/**"],
+      "groupName": "docker actions"
+    },
+    {
+      "description": "symfony-php7 exists to keep PHP 7.4, never propose PHP 8+",
+      "matchBaseBranches": ["symfony-php7"],
+      "matchDatasources": ["docker"],
+      "matchPackageNames": ["php"],
+      "enabled": false
+    }
+  ],
+  "customManagers": [
+    {
+      "description": "Pinned PECL extensions, e.g. `pecl install xdebug-3.5.1` (symfony-8)",
+      "customType": "regex",
+      "managerFilePatterns": ["/(^|/)Dockerfile$/"],
+      "matchStrings": ["pecl install xdebug-(?<currentValue>\\d+\\.\\d+\\.\\d+)"],
+      "depNameTemplate": "xdebug/xdebug",
+      "datasourceTemplate": "github-tags"
+    }
   ]
 }
