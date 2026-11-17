@@ -1,7 +1,7 @@
 # Scheduled workflows only run on the default branch, so this workflow
 # dispatches the Docker Hub workflow of each maintained branch. Each run then
-# builds that branch's Dockerfile and pushes its own tag, picking up the latest
-# base image, OS packages and PECL extensions.
+# builds that branch's Dockerfile without the layer cache and pushes its own
+# tag, picking up the latest base image, OS packages and PECL extensions.
 name: Weekly rebuild
 
 on:
@@ -28,4 +28,4 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
-        run: gh workflow run dockerhub.yaml --ref "${{ matrix.branch }}"
+        run: gh workflow run dockerhub.yaml --ref "${{ matrix.branch }}" -f no_cache=true

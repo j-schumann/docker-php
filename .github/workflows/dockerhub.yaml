@@ -1,6 +1,11 @@
 on:
   push:
   workflow_dispatch:
+    inputs:
+      no_cache:
+        description: Build without the layer cache, to get the latest packages and extensions
+        type: boolean
+        default: false
 
 jobs:
   docker:
@@ -35,3 +40,7 @@ jobs:
           push: ${{ !startsWith(github.ref_name, 'renovate/') }}
           tags: ${{ steps.phpmeta.outputs.tags }}
           labels: ${{ steps.phpmeta.outputs.labels }}
+          # The single-stage Dockerfile makes the inline cache of the branch's own image sufficient
+          cache-from: type=registry,ref=vrokdd/php:php8
+          cache-to: type=inline
+          no-cache: ${{ inputs.no_cache == true }}
