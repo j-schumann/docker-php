@@ -1,5 +1,5 @@
 # Dockerfile for image vrokdd/php:api-8
-FROM php:8-fpm-alpine
+FROM php:8.5-fpm-alpine
 
 # persistent / runtime deps
 RUN apk add --no-cache \
@@ -11,6 +11,10 @@ RUN apk add --no-cache \
     supervisor \
     zip \
     ;
+
+# PIE (https://github.com/php/pie) installs extensions from Packagist, it
+# selects the newest release compatible with the PHP version and enables it
+COPY --from=ghcr.io/php/pie:1.5.5-bin /pie /usr/bin/pie
 
 RUN set -eux; \
     apk add --no-cache --virtual .build-deps \
@@ -34,19 +38,13 @@ RUN set -eux; \
     pdo_pgsql \
     zip \
     ; \
-    pecl install \
-    apcu \
-    apfd \
-    mongodb \
-    redis \
-    ; \
+    pie install apcu/apcu; \
+    pie install mongodb/mongodb-extension; \
+    pie install phpredis/phpredis; \
+    # apfd has no stable release on Packagist yet
+    pecl install apfd; \
     pecl clear-cache; \
-    docker-php-ext-enable \
-    apcu \
-    apfd \
-    mongodb \
-    redis \
-    ; \
+    docker-php-ext-enable apfd; \
     runDeps="$( \
       scanelf --needed --nobanner --format '%n#p' --recursive /usr/local/lib/php/extensions \
        | tr ',' '\n' \
