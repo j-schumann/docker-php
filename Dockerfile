@@ -83,7 +83,7 @@ RUN apt-get install -yq --no-install-recommends $PHPIZE_DEPS \
 #############################
 # Install Node + NPM + Yarn #
 #############################
-RUN curl -sL https://deb.nodesource.com/setup_24.x | bash \
+RUN curl -sL https://deb.nodesource.com/setup_26.x | bash \
     && apt-get install -yq --no-install-recommends nodejs \
     && npm install -g npm yarn
 
