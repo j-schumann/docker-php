@@ -22,6 +22,14 @@
       "matchDatasources": ["docker"],
       "matchPackageNames": ["php"],
       "enabled": false
+    },
+    {
+      "description": "symfony-php7: a new Composer major will likely drop PHP 7.4 support",
+      "matchBaseBranches": ["symfony-php7"],
+      "matchDatasources": ["docker"],
+      "matchPackageNames": ["composer"],
+      "matchUpdateTypes": ["major"],
+      "enabled": false
     }
   ],
   "customManagers": [
@@ -32,6 +40,15 @@
       "matchStrings": ["pecl install xdebug-(?<currentValue>\\d+\\.\\d+\\.\\d+)"],
       "depNameTemplate": "xdebug/xdebug",
       "datasourceTemplate": "github-tags"
+    },
+    {
+      "description": "Node.js major from the NodeSource setup script, e.g. `setup_24.x`; only LTS majors count as stable",
+      "customType": "regex",
+      "managerFilePatterns": ["/(^|/)Dockerfile$/"],
+      "matchStrings": ["deb\\.nodesource\\.com/setup_(?<currentValue>\\d+)\\.x"],
+      "depNameTemplate": "node",
+      "datasourceTemplate": "node-version",
+      "versioningTemplate": "node"
     }
   ]
 }
