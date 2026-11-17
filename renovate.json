@@ -18,12 +18,12 @@
   ],
   "customManagers": [
     {
-      "description": "Pinned PECL extensions, e.g. `pecl install xdebug-3.5.1` (symfony-8)",
+      "description": "Extensions pinned in `pie install vendor/package:version`, e.g. xdebug/xdebug:3.5.3 (symfony-8); unpinned ones always get the newest compatible release",
       "customType": "regex",
       "managerFilePatterns": ["/(^|/)Dockerfile$/"],
-      "matchStrings": ["pecl install xdebug-(?<currentValue>\\d+\\.\\d+\\.\\d+)"],
-      "depNameTemplate": "xdebug/xdebug",
-      "datasourceTemplate": "github-tags"
+      "matchStrings": ["pie install (?<depName>[a-z0-9_.-]+/[a-z0-9_.-]+):(?<currentValue>v?\\d+\\.\\d+\\.\\d+)"],
+      "datasourceTemplate": "packagist",
+      "versioningTemplate": "composer"
     },
     {
       "description": "Node.js major from the NodeSource setup script, e.g. `setup_24.x`; only LTS majors count as stable",
