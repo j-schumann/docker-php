@@ -7,6 +7,12 @@ on:
         type: boolean
         default: false
 
+# A newer run on the same branch replaces an older one, so an outdated build
+# never overwrites the image tag
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   docker:
     name: Push image to Docker Hub
