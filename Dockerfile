@@ -21,7 +21,13 @@ RUN apk add --no-cache \
 # selects the newest release compatible with the PHP version and enables it
 COPY --from=pie /pie /usr/bin/pie
 
-RUN set -eux; \
+# PIE downloads the sources via the GitHub API. Without a token the runner's
+# shared IP quickly hits the rate limit, so CI passes its GITHUB_TOKEN as a
+# build secret (it is not stored in the image). Local builds work without it.
+# The token is set before "set -x", so it is not printed.
+RUN --mount=type=secret,id=github_token,env=GITHUB_TOKEN \
+    [ -z "$GITHUB_TOKEN" ] || export COMPOSER_AUTH="{\"github-oauth\":{\"github.com\":\"$GITHUB_TOKEN\"}}"; \
+    set -eux; \
     apk add --no-cache --virtual .build-deps \
     $PHPIZE_DEPS \
     icu-dev \

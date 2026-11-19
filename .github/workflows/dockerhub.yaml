@@ -53,6 +53,8 @@ jobs:
           push: ${{ !startsWith(github.ref_name, 'renovate/') }}
           tags: ${{ steps.phpmeta.outputs.tags }}
           labels: ${{ steps.phpmeta.outputs.labels }}
+          # used by PIE for the GitHub API, see Dockerfile
+          secrets: github_token=${{ secrets.GITHUB_TOKEN }}
           # The single-stage Dockerfile makes the inline cache of the branch's own image sufficient
           cache-from: type=registry,ref=vrokdd/php:api-8
           cache-to: type=inline
