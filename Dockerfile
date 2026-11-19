@@ -46,8 +46,8 @@ RUN docker-php-ext-install gd intl pdo_mysql zip
 
 ##################################################################
 # Install extensions with PIE (https://github.com/php/pie)       #
-# PIE selects the newest release compatible with the PHP version #
-# and enables the extension. It needs ext-zip, installed above.  #
+# Versions are pinned, Renovate proposes updates (tested by CI). #
+# PIE enables the extension. It needs ext-zip, installed above.  #
 ##################################################################
 # further possible extensions:
 ## apcu/apcu
@@ -60,7 +60,7 @@ COPY --from=ghcr.io/php/pie:1.5.5-bin /pie /usr/bin/pie
 # redis: session storage & cache
 RUN --mount=type=secret,id=github_token,env=GITHUB_TOKEN \
     { [ -z "$GITHUB_TOKEN" ] || export COMPOSER_AUTH="{\"github-oauth\":{\"github.com\":\"$GITHUB_TOKEN\"}}"; } \
-    && pie install phpredis/phpredis
+    && pie install phpredis/phpredis:6.3.0
 
 ##################################################################################
 # Localize by generating locales for PHP to translate / number-format for German #
