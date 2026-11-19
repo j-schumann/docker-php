@@ -54,8 +54,13 @@ RUN docker-php-ext-install gd intl pdo_mysql zip
 ## gnupg: [requires gnupg libgpgme-dev]
 COPY --from=ghcr.io/php/pie:1.5.5-bin /pie /usr/bin/pie
 
+# PIE downloads the sources via the GitHub API. Without a token the runner's
+# shared IP quickly hits the rate limit, so CI passes its GITHUB_TOKEN as a
+# build secret (it is not stored in the image). Local builds work without it.
 # redis: session storage & cache
-RUN pie install phpredis/phpredis
+RUN --mount=type=secret,id=github_token,env=GITHUB_TOKEN \
+    { [ -z "$GITHUB_TOKEN" ] || export COMPOSER_AUTH="{\"github-oauth\":{\"github.com\":\"$GITHUB_TOKEN\"}}"; } \
+    && pie install phpredis/phpredis
 
 ##################################################################################
 # Localize by generating locales for PHP to translate / number-format for German #
