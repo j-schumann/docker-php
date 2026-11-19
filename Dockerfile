@@ -17,8 +17,8 @@ RUN apk add --no-cache \
     zip \
     ;
 
-# PIE (https://github.com/php/pie) installs extensions from Packagist, it
-# selects the newest release compatible with the PHP version and enables it
+# PIE (https://github.com/php/pie) installs extensions from Packagist and
+# enables them. Versions are pinned, Renovate proposes updates (tested by CI).
 COPY --from=pie /pie /usr/bin/pie
 
 # PIE downloads the sources via the GitHub API. Without a token the runner's
@@ -49,9 +49,9 @@ RUN --mount=type=secret,id=github_token,env=GITHUB_TOKEN \
     pdo_pgsql \
     zip \
     ; \
-    pie install apcu/apcu; \
-    pie install mongodb/mongodb-extension; \
-    pie install phpredis/phpredis; \
+    pie install apcu/apcu:v5.1.28; \
+    pie install mongodb/mongodb-extension:2.5.8; \
+    pie install phpredis/phpredis:6.3.0; \
     runDeps="$( \
       scanelf --needed --nobanner --format '%n#p' --recursive /usr/local/lib/php/extensions \
        | tr ',' '\n' \
