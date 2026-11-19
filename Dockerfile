@@ -52,10 +52,6 @@ RUN --mount=type=secret,id=github_token,env=GITHUB_TOKEN \
     pie install apcu/apcu; \
     pie install mongodb/mongodb-extension; \
     pie install phpredis/phpredis; \
-    # apfd has no stable release on Packagist yet
-    pecl install apfd; \
-    pecl clear-cache; \
-    docker-php-ext-enable apfd; \
     runDeps="$( \
       scanelf --needed --nobanner --format '%n#p' --recursive /usr/local/lib/php/extensions \
        | tr ',' '\n' \
