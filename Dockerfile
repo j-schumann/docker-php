@@ -72,12 +72,19 @@ COPY --from=ghcr.io/php/pie:1.5.5-bin /pie /usr/bin/pie
 
 # apcu: very fast user cache, e.g. for api platform
 # mongodb: MongoDB driver
+# PIE downloads the sources via the GitHub API. Without a token the runner's
+# shared IP quickly hits the rate limit, so CI passes its GITHUB_TOKEN as a
+# build secret (it is not stored in the image). Local builds work without it.
 # redis: session storage & cache
-RUN pie install apcu/apcu \
+RUN --mount=type=secret,id=github_token,env=GITHUB_TOKEN \
+    { [ -z "$GITHUB_TOKEN" ] || export COMPOSER_AUTH="{\"github-oauth\":{\"github.com\":\"$GITHUB_TOKEN\"}}"; } \
+    && pie install apcu/apcu \
     && pie install mongodb/mongodb-extension \
     && pie install phpredis/phpredis
 
-RUN apt-get install -yq --no-install-recommends $PHPIZE_DEPS \
+RUN --mount=type=secret,id=github_token,env=GITHUB_TOKEN \
+    { [ -z "$GITHUB_TOKEN" ] || export COMPOSER_AUTH="{\"github-oauth\":{\"github.com\":\"$GITHUB_TOKEN\"}}"; } \
+    && apt-get install -yq --no-install-recommends $PHPIZE_DEPS \
     && pie install xdebug/xdebug:3.5.3
 
 #############################
