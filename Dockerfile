@@ -4,7 +4,7 @@
 # independent PHAR, so take it from the image of the build platform
 FROM --platform=$BUILDPLATFORM ghcr.io/php/pie:1.5.5-bin AS pie
 
-FROM php:8.5-fpm-alpine
+FROM php:8.6-fpm-alpine
 
 # persistent / runtime deps
 RUN apk add --no-cache \
