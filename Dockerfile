@@ -1,5 +1,5 @@
 # Dockerfile for image vrokdd/php
-FROM php:8.5-fpm
+FROM php:8.6-fpm
 LABEL company="Vrok"
 LABEL version="1.3.0"
 
