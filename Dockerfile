@@ -79,7 +79,7 @@ COPY --from=ghcr.io/php/pie:1.6.0-bin /pie /usr/bin/pie
 RUN --mount=type=secret,id=github_token,env=GITHUB_TOKEN \
     { [ -z "$GITHUB_TOKEN" ] || export COMPOSER_AUTH="{\"github-oauth\":{\"github.com\":\"$GITHUB_TOKEN\"}}"; } \
     && pie install apcu/apcu:v5.1.28 \
-    && pie install mongodb/mongodb-extension:2.5.8 \
+    && pie install mongodb/mongodb-extension:2.5.9 \
     && pie install phpredis/phpredis:6.3.0
 
 RUN --mount=type=secret,id=github_token,env=GITHUB_TOKEN \
