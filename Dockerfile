@@ -50,7 +50,7 @@ RUN --mount=type=secret,id=github_token,env=GITHUB_TOKEN \
     zip \
     ; \
     pie install apcu/apcu:v5.1.28; \
-    pie install mongodb/mongodb-extension:2.5.8; \
+    pie install mongodb/mongodb-extension:2.5.9; \
     pie install phpredis/phpredis:6.3.0; \
     runDeps="$( \
       scanelf --needed --nobanner --format '%n#p' --recursive /usr/local/lib/php/extensions \
