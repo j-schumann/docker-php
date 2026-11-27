@@ -52,7 +52,7 @@ RUN docker-php-ext-install gd intl pdo_mysql zip
 # further possible extensions:
 ## apcu/apcu
 ## gnupg: [requires gnupg libgpgme-dev]
-COPY --from=ghcr.io/php/pie:1.6.0-bin /pie /usr/bin/pie
+COPY --from=ghcr.io/php/pie:1.6.1-bin /pie /usr/bin/pie
 
 # PIE downloads the sources via the GitHub API. Without a token the runner's
 # shared IP quickly hits the rate limit, so CI passes its GITHUB_TOKEN as a
