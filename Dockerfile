@@ -2,7 +2,7 @@
 
 # The PIE image only exists for amd64 and arm64, but /pie is a platform
 # independent PHAR, so take it from the image of the build platform
-FROM --platform=$BUILDPLATFORM ghcr.io/php/pie:1.6.0-bin AS pie
+FROM --platform=$BUILDPLATFORM ghcr.io/php/pie:1.6.1-bin AS pie
 
 FROM php:8.5-fpm-alpine
 
